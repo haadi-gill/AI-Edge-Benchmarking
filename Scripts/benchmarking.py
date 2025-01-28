@@ -9,6 +9,10 @@ import matplotlib.pyplot as plt
 """
 
     This script is used to configure the MSO2302A oscilloscope in order to obtain readings of the power consumption of differnet boards.
+    
+    Power will be obtained by measuring current fluctuations across a constant voltage source.
+    
+    Procedure:
     [INSERT DETAILS ABOUT HOW WE ARE SETTING UP, GATHERING DATA, AND STORING IT]
     Export format: 
         raw data - CSV
@@ -50,41 +54,67 @@ RECV_MAX_BYTES = 1024
     For best results, these values should be consistent for all sets of measurements between boards.
 """
 repitions = 20
-frequency = 500
+iterations = 500
+delay = 0.5
 
 raw_data = []
+time_stamps = []
 decibles = []
 
 
+print("Before beginning the measurements, enter data to label the current trial.")
+
+board_name = input("Enter the name of the board: ")
+test_label = input("Enter the label for the current trial: ")
+filepath = input("Enter the filepath to save the current trial data (default relative path - /[board_name]/[test_label]): ")
+voltage = input("Enter the voltage for the current trial: ")
+
+while not voltage.strip().isnumeric():
+    voltage = input("Please enter a numerical value: ")
+    
+voltage = float(voltage.strip())
+
+print("\nBeginning measurements...\n")
 
 for i in range(repitions):
     
-    SCOPE_SOCKET.send(bytes(MSO2302A_DATA['chan1_vpp'], 'utf_8'))
-    data_in = (bytes.decode(SCOPE_SOCKET.recv(RECV_MAX_BYTES), 'utf_8'))
-    raw_data.append(data_in.strip())
-    # print(f"receiving frequency: {float(data_in):.2f}\n")
-    # decibles.append(20.0*math.log(float(data_in)/5.0, 10))
-    # print(f"decibel: {float(decibles[-1]):.2f}\n")
-    time.sleep(1.0/frequency)
+    a = input("Press any enter to start next repition...")
+    
+    try: 
+        
+        for j in range(iterations):
+            SCOPE_SOCKET.send(bytes(MSO2302A_DATA['chan1_vpp'], 'utf_8'))
+            data_in = (bytes.decode(SCOPE_SOCKET.recv(RECV_MAX_BYTES), 'utf_8'))
+            raw_data.append(data_in.strip())
+            time_stamps.append(time.time())
+            time.sleep(delay)
+    
+    except Exception as err:
+        logger.error(err)
+    
+    print("\nCurrent repition complete. Perform any necessary resets now.\n")
+    
 
 SCOPE_SOCKET.close()
 
 # Voltage will be constant, current will fluctuate. Final measurements will represent Power over Time. 
+power = [voltage * float(i) for i in raw_data]
+datetimes = [pandas.to_datetime(i) for i in time_stamps]
 
+df = pandas.DataFrame(data = [datetimes, raw_data, power]).T
+df.columns = ['timestamp', 'raw_data', 'power']
+df.index = df['timestamp']
 
+if filepath == "":
+    filepath = Path(f'./{board_name}/{test_label}')
+else:
+    filepath = Path(filepath)
 
-# df = pandas.DataFrame(data = [frequencies, raw_data, decibles]).T
-# df.columns = ['frequencies', 'raw_data', 'decibles']
-# df.index = df['frequencies']
-# df.drop(columns='frequencies', inplace=True)
-# df.to_csv('Equipment Demonstration/data.csv')
+filepath.parent.mkdir(parents = True, exist_ok = True)
+df.to_csv(f'{filepath}/data.csv')
 
-# plt.plot(frequencies, decibles)
-# plt.axvline(1591, color = 'purple', label = 'Experimental Cutoff')
-# plt.axvline(1082, color = 'red', label = 'Calculated Cutoff')
-# plt.xlabel('Frequencies (Hz)')
-# plt.ylabel('Decibels (dB)')
-# plt.xscale('log')
-# plt.title("Bode Plot for Cutoff Frequency")
-# plt.legend()
-# plt.savefig('Equipment Demonstration/graph.png')
+plt.plot(datetimes, power)
+plt.xlabel('Time')
+plt.ylabel('Power')
+plt.title(f'Power over Time for {board_name} - {test_label}')
+plt.savefig(f'{filepath}/graph.png')
