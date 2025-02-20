@@ -35,7 +35,7 @@ MSO2302A_DATA = {
 
 #Data for Multimeter
 MM_Data = {
-    'ip_addr' : ('10.245.26.128', 5555),
+    'ip_addr' : ('10.245.26.24', 5555),
     'curr_dc' : ':MEAS:CURR:DC?\n'
 }
 
@@ -48,21 +48,18 @@ logger = logging.getLogger(__name__)
 
 
 """
-    These values define the number of iterations to measure, for the total repitions and the frequency (Hz) per repition.
+    These values define the number of iterations to measure, for the total repetitions and the frequency (Hz) per repetition.
     For best results, these values should be consistent for all sets of measurements between boards.
 """
-repitions = 1
+repetitions = 3
 iterations = 50
 delay = 0.1
 
-raw_data = []
-time_stamps = []
-decibles = []
 
 
 print("Before beginning the measurements, enter data to label the current trial.")
 
-new_ip = input("Enter the IP address of the multimeter ([d]efault - 10.245.26.218): ")
+new_ip = input(f"Enter the IP address of the multimeter ([d]efault - {MM_Data['ip_addr'][0]}): ")
 board_name = input("Enter the name of the board: ")
 test_label = input("Enter the label for the current trial: ")
 filepath = input("Enter the filepath to save the current trial data (default relative path - /[board_name]/[test_label]): ")
@@ -109,30 +106,49 @@ print("Idle current draw: ", idle_current)
 
 print("\nBeginning measurements...\n")
 
-for i in range(repitions):
+for i in range(repetitions):
     
-    a = input("Press any enter to start next repition...")
+    a = input("Press enter to start next repetition...")
+    
+    raw_data = []
+    offset_data = []
+    time_stamps = []
     
     try: 
         
         for j in range(iterations):
+            
+            
             # Query the Multimeter
             MM_SOCKET.send(bytes(MM_Data['curr_dc'], 'utf_8'))
             # Read and store the value 
             data_in = (bytes.decode(MM_SOCKET.recv(RECV_MAX_BYTES), 'utf_8'))
-            raw_data.append(float(data_in.strip())-idle_current)
+            raw_data.append(float(data_in.strip()))
+            offset_data.append(float(data_in.strip())-idle_current)
             time_stamps.append(datetime.now())
             time.sleep(delay)
     
     except Exception as err:
         logger.error(err)
     
-    print("\nCurrent repition complete. Perform any necessary resets now.\n")
+    print("\nCurrent repetition complete. Perform any necessary resets now.\n")
     
-    power = [voltage * float(i) for i in raw_data]
+    raw_power = [voltage * float(i) for i in raw_data]
+    offset_power = [voltage * float(i) for i in offset_data]
     
-    df.append(pandas.DataFrame(data = [[pandas.to_datetime(i) for i in time_stamps], raw_data, power], columns=['timestamp_1', 'current_1', 'power_1']).T)
-
+    temp = pandas.DataFrame(data = [[pandas.to_datetime(i) for i in time_stamps], raw_data, raw_power, offset_data, offset_power])
+    temp = temp.T
+    temp.columns = [f'timestamp_{i+1}', f'raw_current_{i+1}', f'raw_power_{i+1}', f'offset_current_{i+1}', f'offset_power_{i+1}']
+    temp.index = list(range(iterations))
+    
+    print("\n\n\n")
+    print(temp)
+    
+    df = pandas.concat([df, temp], axis=1)
+    
+    print("\n\n\n")
+    print(df)
+    
 MM_SOCKET.close()
 
 try:
@@ -142,24 +158,31 @@ try:
         filepath = f'./{board_name}/{test_label}'
     else:
         filepath = filepath;
-        
-    df.index = list(range(iterations))
-
+    
     if not os.path.exists(filepath):
         os.makedirs(filepath, exist_ok=True)
     
-    powers = [f'power_{a+1}' for a in range(repitions)]
-    
-    df.plot(x = df.index, y = powers, kind='line', legend=True, title = f'Power over Time for {board_name} - {test_label}')
-        
     df.to_csv(f'{filepath}/data.csv')
+    
+    powers = [f'raw_power_{a+1}' for a in range(repetitions)]
+    
+    df.plot(y = powers, kind='line', legend=True, title = f'Raw Power over Time for {board_name} - {test_label}')
+        
+
+    """ 
+        Maybe take average timestamp change estimate for x axis?
+    """
 
     # plt.plot(df)
     # plt.xlabel('Time')
     # plt.ylabel('Power')
     # plt.title(f'Power and Current over Time for {board_name} - {test_label}')
-    plt.show()
-    plt.savefig(f'{filepath}/graph.png')
+    plt.savefig(f'{filepath}/raw_graph.png')
+    
+    offsets = [f'offset_power_{a+1}' for a in range(repetitions)]
+    
+    df.plot(y = offsets, kind='line', legend=True, title = f'Offset Power over Time for {board_name} - {test_label}')
+    plt.savefig(f'{filepath}/offset_graph.png')
     
 except Exception as err:
     logger.error(err)
