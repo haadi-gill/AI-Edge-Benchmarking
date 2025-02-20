@@ -4,7 +4,9 @@ import time
 import math
 import pandas
 import logging
+from datetime import datetime
 import matplotlib.pyplot as plt
+import os
 
 """
 
@@ -31,6 +33,12 @@ MSO2302A_DATA = {
     'rphase': ':MEAS:RPH? CHAN1,CHAN2\n'
 }
 
+#Data for Multimeter
+MM_Data = {
+    'ip_addr' : ('10.245.26.128', 5555),
+    'curr_dc' : ':MEAS:CURR:DC?\n'
+}
+
 # Set up logging file for error reporting
 # Referenced from: https://stackoverflow.com/questions/3383865/how-to-log-error-to-file-and-not-fail-on-exception
 logging.basicConfig(filename='ErrorLogs\\benchmarking.log', level=logging.ERROR,
@@ -39,23 +47,13 @@ logging.basicConfig(filename='ErrorLogs\\benchmarking.log', level=logging.ERROR,
 logger = logging.getLogger(__name__)
 
 
-try:
-    SCOPE_SOCKET = socket.create_connection(MSO2302A_DATA['ip_addr'])
-except Exception as err:
-    logger.error(err)
-    exit()
-    
-    
-SCOPE_SOCKET.settimeout(2.0)
-RECV_MAX_BYTES = 1024
-
 """
     These values define the number of iterations to measure, for the total repitions and the frequency (Hz) per repition.
     For best results, these values should be consistent for all sets of measurements between boards.
 """
-repitions = 20
-iterations = 500
-delay = 0.5
+repitions = 1
+iterations = 50
+delay = 0.1
 
 raw_data = []
 time_stamps = []
@@ -64,15 +62,50 @@ decibles = []
 
 print("Before beginning the measurements, enter data to label the current trial.")
 
+new_ip = input("Enter the IP address of the multimeter ([d]efault - 10.245.26.218): ")
 board_name = input("Enter the name of the board: ")
 test_label = input("Enter the label for the current trial: ")
 filepath = input("Enter the filepath to save the current trial data (default relative path - /[board_name]/[test_label]): ")
 voltage = input("Enter the voltage for the current trial: ")
 
-while not voltage.strip().isnumeric():
-    voltage = input("Please enter a numerical value: ")
+while not voltage.strip().isdecimal() and not voltage.strip().isnumeric():
+    voltage = input("\tPlease enter a numerical value: ")
+    
+if new_ip != "d" and new_ip != "":
+    print(new_ip)
+    MM_Data['ip_addr'] = (new_ip, 5555)
+
+print("Attempting to connect to IP address: ", MM_Data['ip_addr'])
+
+try:
+    # SCOPE_SOCKET = socket.create_connection(MSO2302A_DATA['ip_addr'])
+    MM_SOCKET = socket.create_connection(MM_Data['ip_addr'])
+except Exception as err:
+    logger.error(err)
+    print("Connection failed. See log for more details.")
+    exit()
+    
+    
+MM_SOCKET.settimeout(2.0)
+RECV_MAX_BYTES = 1024
     
 voltage = float(voltage.strip())
+
+input("\nPress enter to begin idle current draw...\n")
+
+idle_current = 0;
+idle_iterations = 20
+
+for j in range(idle_iterations):
+    # Query the Multimeter
+    MM_SOCKET.send(bytes(MM_Data['curr_dc'], 'utf_8'))
+    # Read and store the value 
+    data_in = (bytes.decode(MM_SOCKET.recv(RECV_MAX_BYTES), 'utf_8'))
+    idle_current += float(data_in.strip()) * (1/idle_iterations)
+
+df = pandas.DataFrame()
+
+print("Idle current draw: ", idle_current)
 
 print("\nBeginning measurements...\n")
 
@@ -83,10 +116,12 @@ for i in range(repitions):
     try: 
         
         for j in range(iterations):
-            SCOPE_SOCKET.send(bytes(MSO2302A_DATA['chan1_vpp'], 'utf_8'))
-            data_in = (bytes.decode(SCOPE_SOCKET.recv(RECV_MAX_BYTES), 'utf_8'))
-            raw_data.append(data_in.strip())
-            time_stamps.append(time.time())
+            # Query the Multimeter
+            MM_SOCKET.send(bytes(MM_Data['curr_dc'], 'utf_8'))
+            # Read and store the value 
+            data_in = (bytes.decode(MM_SOCKET.recv(RECV_MAX_BYTES), 'utf_8'))
+            raw_data.append(float(data_in.strip())-idle_current)
+            time_stamps.append(datetime.now())
             time.sleep(delay)
     
     except Exception as err:
@@ -94,27 +129,37 @@ for i in range(repitions):
     
     print("\nCurrent repition complete. Perform any necessary resets now.\n")
     
+    power = [voltage * float(i) for i in raw_data]
+    
+    df.append(pandas.DataFrame(data = [[pandas.to_datetime(i) for i in time_stamps], raw_data, power], columns=['timestamp_1', 'current_1', 'power_1']).T)
 
-SCOPE_SOCKET.close()
+MM_SOCKET.close()
 
-# Voltage will be constant, current will fluctuate. Final measurements will represent Power over Time. 
-power = [voltage * float(i) for i in raw_data]
-datetimes = [pandas.to_datetime(i) for i in time_stamps]
+try:
+    # Voltage will be constant, current will fluctuate. Final measurements will represent Power over Time. 
 
-df = pandas.DataFrame(data = [datetimes, raw_data, power]).T
-df.columns = ['timestamp', 'raw_data', 'power']
-df.index = df['timestamp']
+    if filepath == "":
+        filepath = f'./{board_name}/{test_label}'
+    else:
+        filepath = filepath;
+        
+    df.index = list(range(iterations))
 
-if filepath == "":
-    filepath = Path(f'./{board_name}/{test_label}')
-else:
-    filepath = Path(filepath)
+    if not os.path.exists(filepath):
+        os.makedirs(filepath, exist_ok=True)
+    
+    powers = [f'power_{a+1}' for a in range(repitions)]
+    
+    df.plot(x = df.index, y = powers, kind='line', legend=True, title = f'Power over Time for {board_name} - {test_label}')
+        
+    df.to_csv(f'{filepath}/data.csv')
 
-filepath.parent.mkdir(parents = True, exist_ok = True)
-df.to_csv(f'{filepath}/data.csv')
-
-plt.plot(datetimes, power)
-plt.xlabel('Time')
-plt.ylabel('Power')
-plt.title(f'Power over Time for {board_name} - {test_label}')
-plt.savefig(f'{filepath}/graph.png')
+    # plt.plot(df)
+    # plt.xlabel('Time')
+    # plt.ylabel('Power')
+    # plt.title(f'Power and Current over Time for {board_name} - {test_label}')
+    plt.show()
+    plt.savefig(f'{filepath}/graph.png')
+    
+except Exception as err:
+    logger.error(err)

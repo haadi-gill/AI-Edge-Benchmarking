@@ -1,2 +1,31 @@
 2025-01-28 10:56:26,583 - ERROR - __main__ - [WinError 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
 2025-01-28 10:56:57,600 - ERROR - __main__ - [WinError 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
+2025-02-17 14:10:54,922 - ERROR - __main__ - [WinError 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
+2025-02-17 14:12:17,002 - ERROR - __main__ - [WinError 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
+2025-02-17 14:22:58,504 - ERROR - __main__ - [WinError 10061] No connection could be made because the target machine actively refused it
+2025-02-17 14:27:05,884 - ERROR - __main__ - [WinError 10061] No connection could be made because the target machine actively refused it
+2025-02-17 14:27:38,475 - ERROR - __main__ - [WinError 10061] No connection could be made because the target machine actively refused it
+2025-02-17 14:28:51,603 - ERROR - __main__ - [WinError 10061] No connection could be made because the target machine actively refused it
+2025-02-17 14:29:19,757 - ERROR - __main__ - [WinError 10061] No connection could be made because the target machine actively refused it
+2025-02-17 14:30:27,203 - ERROR - __main__ - [WinError 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
+2025-02-17 14:33:44,987 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:48,341 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:49,020 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:49,649 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:50,290 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:50,874 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:51,471 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:52,085 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:52,568 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:53,021 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:53,396 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:56,915 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:57,188 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:57,415 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:57,629 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:57,842 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:58,048 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:58,265 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:58,457 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:58,674 - ERROR - __main__ - 'curr_dc'
+2025-02-17 14:33:58,722 - ERROR - __main__ - Cannot save file into a non-existent directory: 'Test_Circuit\trial_4'
