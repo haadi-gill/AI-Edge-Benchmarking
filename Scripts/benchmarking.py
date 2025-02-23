@@ -132,6 +132,10 @@ print("Idle current draw: ", idle_current)
 
 print("\nBeginning measurements...\n")
 
+total_inference = []
+avg_inf_power = []
+energy = []
+
 for i in range(repetitions):
     
     a = input("Press enter to start next repetition...")
@@ -168,7 +172,22 @@ for i in range(repetitions):
     
     raw_power = [voltage * float(i) for i in raw_data]
     offset_power = [voltage * float(i) for i in offset_data]
-    
+
+    if (o_scope == "Y") :
+        #count total inference time and find average power while inferencing
+        total = 0
+        power = 0
+        idx = 0
+        for point in o_scope_data :
+            if (point >= 1) : #if inferencing at this time
+                total += 1
+                power += offset_power[idx]
+        idx += 1
+
+        total_inference.append(total * 0.1) #add 100ms * total high points to the total time
+        avg_inf_power.append(power / total) #find the average offset power draw WHILE INFERENCING
+        energy.append(total_inference * avg_inf_power) #energy = power * time (in Joules)
+
     temp = pandas.DataFrame(data = [[pandas.to_datetime(i) for i in time_stamps], raw_data, raw_power, offset_data, offset_power, o_scope_data])
     temp = temp.T
     temp.columns = [f'timestamp_{i+1}', f'raw_current_{i+1}', f'raw_power_{i+1}', f'offset_current_{i+1}', f'offset_power_{i+1}', f'o_scope_data_{i+1}']
@@ -217,10 +236,25 @@ try:
     df.plot(y = offsets, kind='line', legend=True, title = f'Offset Power over Time for {board_name} - {test_label}')
     plt.savefig(f'{filepath}/offset_graph.png')
 
-    toggles = [f'o_scope_data_{a+1}' for a in range(repetitions)]
+    if (o_scope == "Y") :
+        toggles = [f'o_scope_data_{a+1}' for a in range(repetitions)]
 
-    df.plot(y = toggles, kind='line', legend=True, title = f'Pin Toggle over Time for {board_name} - {test_label}')
-    plt.savefig(f'{filepath}/pin_toggle_graph.png')
+        df.plot(y = toggles, kind='line', legend=True, title = f'Pin Toggle over Time for {board_name} - {test_label}')
+        plt.savefig(f'{filepath}/pin_toggle_graph.png')
+
+        #Optional final statistics
+        print("Printing overall statistics based on inferencing time data measured from pin toggle:\n")
+        print("WARNING: This data may be inaccurate for models with an inferencing time of less than 100ms\n")
+        print("\n")
+        print("Trial 1 total inference time: " + str(total_inference[0]) + "\n")
+        print("Trial 2 total inference time: " + str(total_inference[1]) + "\n")
+        print("Trial 3 total inference time: " + str(total_inference[2]) + "\n")
+        print("Trial 1 average offset power while inferencing: " + str(avg_inf_power[0]) + "\n")
+        print("Trial 2 average offset power while inferencing: " + str(avg_inf_power[1]) + "\n")
+        print("Trial 3 average offset power while inferencing: " + str(avg_inf_power[2]) + "\n")
+        print("Trial 1 energy consumed by inferencing: " + str(energy[0]) + "\n")
+        print("Trial 2 energy consumed by inferencing: " + str(energy[1]) + "\n")
+        print("Trial 3 energy consumed by inferencing: " + str(energy[2]) + "\n")
     
 except Exception as err:
     logger.error(err)
