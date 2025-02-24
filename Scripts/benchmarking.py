@@ -189,7 +189,7 @@ for i in range(repetitions):
             avg_inf_power.append(0)
         else :
             avg_inf_power.append(power / total) #find the average offset power draw WHILE INFERENCING
-        energy.append(total_inference * avg_inf_power) #energy = power * time (in Joules)
+        energy.append(total_inference[-1] * avg_inf_power[-1]) #energy = power * time (in Joules)
 
     temp = pandas.DataFrame(data = [[pandas.to_datetime(i) for i in time_stamps], raw_data, raw_power, offset_data, offset_power, o_scope_data])
     temp = temp.T
