@@ -15,8 +15,11 @@ Raw values are stored in addition to offset values, which come from isolating sp
 ### List of Current Boards
 - Raspberry Pi Pico
 - Raspberry Pi Zero
-- MAX78000
+- MAX78000FTHR
 ### List of In-Progress/Future Boards
 - BeagleBone AI-64
 
 ## Current Issues
+
+## Procedures
+![screenshot](Images/setup.png)
