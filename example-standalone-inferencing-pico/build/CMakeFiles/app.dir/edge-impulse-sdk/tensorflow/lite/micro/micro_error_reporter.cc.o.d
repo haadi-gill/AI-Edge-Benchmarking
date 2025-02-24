@@ -1,0 +1,25 @@
+CMakeFiles/app.dir/edge-impulse-sdk/tensorflow/lite/micro/micro_error_reporter.cc.o: \
+ /mnt/c/Users/adamj/Edge/example-standalone-inferencing-pico/edge-impulse-sdk/tensorflow/lite/micro/micro_error_reporter.cc \
+ /mnt/c/Users/adamj/Edge/example-standalone-inferencing-pico/./edge-impulse-sdk/tensorflow/lite/micro/micro_error_reporter.h \
+ /usr/include/newlib/c++/10.3.1/cstdarg \
+ /usr/include/newlib/c++/10.3.1/arm-none-eabi/thumb/v6-m/nofp/bits/c++config.h \
+ /usr/include/newlib/c++/10.3.1/arm-none-eabi/thumb/v6-m/nofp/bits/os_defines.h \
+ /usr/include/newlib/c++/10.3.1/arm-none-eabi/thumb/v6-m/nofp/bits/cpu_defines.h \
+ /usr/lib/gcc/arm-none-eabi/10.3.1/include/stdarg.h \
+ /mnt/c/Users/adamj/Edge/example-standalone-inferencing-pico/./edge-impulse-sdk/tensorflow/lite/core/api/error_reporter.h \
+ /mnt/c/Users/adamj/Edge/example-standalone-inferencing-pico/./edge-impulse-sdk/tensorflow/lite/micro/compatibility.h \
+ /usr/include/newlib/c++/10.3.1/cstdint \
+ /usr/lib/gcc/arm-none-eabi/10.3.1/include/stdint.h \
+ /usr/include/newlib/c++/10.3.1/new \
+ /usr/include/newlib/c++/10.3.1/exception \
+ /usr/include/newlib/c++/10.3.1/bits/exception.h \
+ /usr/include/newlib/c++/10.3.1/bits/exception_ptr.h \
+ /usr/include/newlib/c++/10.3.1/bits/exception_defines.h \
+ /usr/include/newlib/c++/10.3.1/bits/cxxabi_init_exception.h \
+ /usr/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h \
+ /usr/include/newlib/c++/10.3.1/typeinfo \
+ /usr/include/newlib/c++/10.3.1/bits/hash_bytes.h \
+ /usr/include/newlib/c++/10.3.1/bits/nested_exception.h \
+ /usr/include/newlib/c++/10.3.1/bits/move.h \
+ /usr/include/newlib/c++/10.3.1/type_traits \
+ /mnt/c/Users/adamj/Edge/example-standalone-inferencing-pico/./edge-impulse-sdk/tensorflow/lite/micro/micro_log.h
