@@ -9,7 +9,7 @@ This repository runs an exported impulse on the Raspberry Pi Pico / RP2040. See 
 * [Raspberry Pi Pico](https://www.raspberrypi.org/products/raspberry-pi-pico/).
 
 ### Software
-
+* Linux WSL.
 * [Edge Impulse CLI](https://docs.edgeimpulse.com/docs/cli-installation).
 * [GNU ARM Embedded Toolchain](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads).
 * [CMake](https://cmake.org/install/).
