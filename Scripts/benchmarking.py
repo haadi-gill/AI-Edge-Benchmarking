@@ -185,7 +185,10 @@ for i in range(repetitions):
         idx += 1
 
         total_inference.append(total * 0.1) #add 100ms * total high points to the total time
-        avg_inf_power.append(power / total) #find the average offset power draw WHILE INFERENCING
+        if (total == 0) :
+            avg_inf_power.append(0)
+        else :
+            avg_inf_power.append(power / total) #find the average offset power draw WHILE INFERENCING
         energy.append(total_inference * avg_inf_power) #energy = power * time (in Joules)
 
     temp = pandas.DataFrame(data = [[pandas.to_datetime(i) for i in time_stamps], raw_data, raw_power, offset_data, offset_power, o_scope_data])
