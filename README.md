@@ -13,7 +13,7 @@ Using the `benchmarking.py` script, we are able to record:
 - Power
 - Energy
 
-Raw values are stored in addition to offset values, which come from isolating spikes from idle power consumption. This is more impactful for larger boards such as those in the single board computer class. A pin toggle feature is also used to ensure that power measurements 
+Raw values are stored in addition to offset values, which come from isolating spikes from idle power consumption. This is more impactful for larger boards such as those in the single board computer class. A pin toggle feature is also used to ensure that power spikes observed were taken during inferencing time. This is implemented by driving the pin high during inferencing and low when not.
 
 ## Current State
 ### List of Current Boards
