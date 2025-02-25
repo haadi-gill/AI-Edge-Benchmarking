@@ -8,20 +8,41 @@ Our goal is to create a standardized benchmarking process for Edge AI Applicatio
 ## Current Features
 Using the "EdgeImpulse" framework, we are able to have a standardized set of models that can target a variety of boards. These models can be compiled into simple c++ programs that record a precise measurement of inferencing time.
 
-Using the `benchmarking.py` script, we are able to record:
-- Current
-- Power
-- Energy
+<html>
+  
+<div>
+  <span>  Using the  </span>
+  <a href="./Scripts/benchmarking.py"><code>benchmarking.py</code></a> script, we are able to record: <br>
+  <ul>
+    <li>Current</li>
+    <li>Power</li>
+    <li>Energy</li>
+  </ul>
+</div>
+</html>
 
 Raw values are stored in addition to offset values, which come from isolating spikes from idle power consumption. This is more impactful for larger boards such as those in the single board computer class. A pin toggle feature is also used to ensure that power spikes observed were taken during inferencing time. This is implemented by driving the pin high during inferencing and low when not.
 
-## Current State
-### List of Current Boards
-- Raspberry Pi Pico
-- Raspberry Pi Zero
-- MAX78000FTHR
-### List of In-Progress/Future Boards
-- BeagleBone AI-64
+
+<html>
+    <h2> Current State </h2>
+    <h4>
+        <a href = "https://youtu.be/uJIqOznYBQY">
+            Video Demonstration of Latest Milestone
+        </a>
+    </h4>
+    <h3> List of Current Boards </h3>
+    <ul>
+        <li><a href = "/MAX78000_FTHR">MAX78000FTHR</a></li>
+        <li><a href = "/RaspberryPi_Pico">Raspberry Pi Pico</a></li>
+        <li><a href = "/RaspberryPi_3B">Raspberry Pi 3B</a></li>
+    </ul>
+    <h3>List of In-Progress/Future Boards</h3>
+    <ul>
+        <li>BeagleBone AI-64</li>
+        <li>Raspberry Pi Zero</li>
+    </ul>
+</html>
 
 ## Current Issues
 - Due to multimeter polling rate and network latency, it is not recommended to use the script for models with an inference time of 100ms or below. Smaller models can be repeated many times in succession to fix this problem and provide more precise measurements.
@@ -30,8 +51,8 @@ Raw values are stored in addition to offset values, which come from isolating sp
 ### Measuring Inference Time: Using EdgeImpulse
 With Edge Impulse models, measuring inference time is a fully standardized process. Before and after invoking the model, a timer is captured. The elapsed time is stored and transported using serial communication or viewed in a terminal in the case of single-board computers.  
 
-### Measuring Power and Energy: Using `benchmarking.py`
-The `benchmarking.py` script provides a standardized process for measuring inferencing power draw and energy consumption. It can be used with any board that has an external power source option and a GPIO pin that can be toggled on and off.
+### Measuring Power and Energy: Using <a href="./Scripts/benchmarking.py"><code>benchmarking.py</code></a>
+The <a href="./Scripts/benchmarking.py"><code>benchmarking.py</code></a> script provides a standardized process for measuring inferencing power draw and energy consumption. It can be used with any board that has an external power source option and a GPIO pin that can be toggled on and off.
 The procedure for using this script is described below:
 1. Set up the hardware as shown in the image below. The power supply positive terminal is connected to the board Vin. The multimeter positive terminal is connected to board GND. The oscilloscope positive terminal is connected to the board pin toggle. All of the negative terminals are connected together. 
 
