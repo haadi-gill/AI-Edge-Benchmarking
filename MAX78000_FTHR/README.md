@@ -1,63 +1,26 @@
-# Edge Impulse Example: stand-alone inferencing (Raspberry Pi Pico)
+# MAX78000_FTHR
 
-This repository runs an exported impulse on the Raspberry Pi Pico / RP2040.
+These models are used with the Maxim SDK software to test the features of the max78000 and its hardware accelerator.
 
 ## Requirements
 
 ### Hardware
 
-* [Raspberry Pi Pico](https://www.raspberrypi.org/products/raspberry-pi-pico/).
+MAX78000FTHR
 
 ### Software
-* Linux WSL.
-* [Edge Impulse CLI](https://docs.edgeimpulse.com/docs/cli-installation).
-* [GNU ARM Embedded Toolchain](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads).
-* [CMake](https://cmake.org/install/).
-* Rasperry Pi Pico SDK:
-   ```bash
-   git clone -b master https://github.com/raspberrypi/pico-sdk.git
-   cd pico-sdk
-   git submodule update --init
-   export PATH="<Path to Pico SDK>"
-   ```
+Keyword Sensing
+One example model is “KWS20”, a voice-sensing model that uses a CNN to classify audio signals into 20 different “keywords” (“up”, “one”, “two”, etc.). It makes use of the hardware accelerator and runs independently, inferencing any time a voice is detected.
+
+Rock Paper Scissors
+Another example model is “rps”, an image detection model that uses a CNN to classify images into either a rock, paper, or scissors. It makes use of the hardware accelerator and onboard camera, requiring the user to press a button to perform an inference.
 
 ## Building the application
 
-### Get the Edge Impulse SDK
-
-Unzip the deployed `C++ library` from your Edge Impulse project and copy to the source directory of this repository:
-
-   ```
-   example-standalone-inferencing-pico/
-   ├─ source
-   ├─- model-parameters
-   ├─- edge-impulse-sdk
-   ├─- tflite-model
-   ├─- CMakeLists.txt
-   ├─ .gitignore
-   ├─ LICENSE
-   ├─ README.md
-   └─ pico_sdk_import.cmake
-   ```
-
 ### Compile
 
-1. Create the `build` folder:
-   ```bash
-   mkdir build && cd build
-   ```
-1. Compile:
-   ```bash
-   cmake ..
-   clear && make -j4
-   ```
+For third party models, use the "izer" tool to compile a trained model to make use of the hardware accelerator. A detailed description of this tool can be found at https://github.com/analogdevicesinc/MaximAI_Documentation.
 
 ### Flash
 
-Connect the Raspberry Pi Pico to your computer using a micro-USB cable while pressing and holding the **BOOTSEL** button.
-
-Drag and drop the `build/pico_standalone.uf2` file to the **RPI-RP2** disk in your file explorer.
-
-### Serial connection
-
-Use screen, minicom or Serial monitor in Arduino IDE to set up a serial connection over USB. The following UART settings are used: 115200 baud, 8N1.
+Use the tools in the Maxim SDK to build and flash to the device.
