@@ -39,8 +39,23 @@ Connect with application such as RealVNC Viewer to access desktop environment
  ### Script
  The script is a standard in the project as all members run it. It interfaces with the Digital Multimeter to measure current, which is then transformed into power. It then plots these points into a graph as raw power and offset power for when the model is and is not running.
 
+ ## WIP
+* CPU Usage
+ '''
+ top > output.txt
+ '''
+* temperature
+ '''
+ vcgencmd measure_temp
+ '''
+
 
  ## Issues
  * Currently working on pin toggle high during inferences to match the power changes to inferences
  * Working on displaying CPU usage and temperature over time to an output file
  
+ ## References
+* [Paul McWhorter](https://www.youtube.com/watch?v=yE7Ve3U5Slw)
+    - Setting up Raspi for Tensorflow | Writing new script using Object Detection Model
+* [Ben | Lazy Tech](https://www.youtube.com/watch?v=kX6zWqMP9U4)
+    - Quick Reference for running Object Detection on Raspi
