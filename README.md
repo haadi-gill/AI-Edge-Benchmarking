@@ -12,7 +12,7 @@ Using the "EdgeImpulse" framework, we are able to have a standardized set of mod
   
 <div>
   <span>  Using the  </span>
-  <a href="./scripts/benchmarking.py"><code>benchmarking.py</code></a> script, we are able to record: <br>
+  <a href="./Scripts/benchmarking.py"><code>benchmarking.py</code></a> script, we are able to record: <br>
   <ul>
     <li>Current</li>
     <li>Power</li>
@@ -29,8 +29,8 @@ Raw values are stored in addition to offset values, which come from isolating sp
     <h3> List of Current Boards </h3>
     <ul>
         <li><a href = "/MAX78000_FTHR">MAX78000FTHR</a></li>
-        <li><a href = "RaspberryPi_Pico">Raspberry Pi Pico</a></li>
-        <li><a href = "RaspberryPi_3B">Raspberry Pi 3B</a></li>
+        <li><a href = "/RaspberryPi_Pico">Raspberry Pi Pico</a></li>
+        <li><a href = "/RaspberryPi_3B">Raspberry Pi 3B</a></li>
     </ul>
     <h3>List of In-Progress/Future Boards</h3>
     <ul>
@@ -46,8 +46,8 @@ Raw values are stored in addition to offset values, which come from isolating sp
 ### Measuring Inference Time: Using EdgeImpulse
 With Edge Impulse models, measuring inference time is a fully standardized process. Before and after invoking the model, a timer is captured. The elapsed time is stored and transported using serial communication or viewed in a terminal in the case of single-board computers.  
 
-### Measuring Power and Energy: Using <a href="./scripts/benchmarking.py"><code>benchmarking.py</code></a>
-The <a href="./scripts/benchmarking.py"><code>benchmarking.py</code></a> script provides a standardized process for measuring inferencing power draw and energy consumption. It can be used with any board that has an external power source option and a GPIO pin that can be toggled on and off.
+### Measuring Power and Energy: Using <a href="./Scripts/benchmarking.py"><code>benchmarking.py</code></a>
+The <a href="./Scripts/benchmarking.py"><code>benchmarking.py</code></a> script provides a standardized process for measuring inferencing power draw and energy consumption. It can be used with any board that has an external power source option and a GPIO pin that can be toggled on and off.
 The procedure for using this script is described below:
 1. Set up the hardware as shown in the image below. The power supply positive terminal is connected to the board Vin. The multimeter positive terminal is connected to board GND. The oscilloscope positive terminal is connected to the board pin toggle. All of the negative terminals are connected together. 
 
