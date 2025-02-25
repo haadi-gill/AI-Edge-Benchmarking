@@ -1,5 +1,5 @@
 ## Operating System
-Raspberry Pi OS (Legacy 32-bit) Debian Bullseye with Desktop environment and all freatures to allow flexability.
+Raspberry Pi OS (Legacy 64-bit) Debian Bullseye with Desktop environment and all freatures to allow flexability.
 ## Connection
 SSH Configuration: Hostname: raspberrypi3sd Username: seniordesign Password: design
 Connect with: ssh seniordesign@raspberrypi3sd enter username and password
