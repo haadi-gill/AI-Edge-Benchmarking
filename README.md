@@ -26,6 +26,11 @@ Raw values are stored in addition to offset values, which come from isolating sp
 
 <html>
     <h2> Current State </h2>
+    <h4>
+        <a href = "https://youtu.be/uJIqOznYBQY">
+            Video Demonstration of Latest Milestone
+        </a>
+    </h4>
     <h3> List of Current Boards </h3>
     <ul>
         <li><a href = "/MAX78000_FTHR">MAX78000FTHR</a></li>
