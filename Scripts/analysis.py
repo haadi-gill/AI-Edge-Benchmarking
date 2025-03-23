@@ -13,3 +13,24 @@ import os
 """
 
 
+df = pandas.read_excel("Scripts/benchmark_template.xlsx")
+df.drop(columns=["Description", "Flag", "Unnamed: 4", "Flag Values"], inplace=True)
+print(df)
+print(df[df['Name'] == 'logging_filepath']["Value"][0])
+
+
+def config_value(label):
+    
+    return df[df['Name'] == label].reset_index()["Value"][0]
+    
+logging_filepath = config_value('logging_filepath')        
+repetitions = config_value('repetitions')
+iterations = config_value('iterations')
+delay = config_value('delay')
+use_oscilloscope = config_value('use_oscilloscope')
+
+print(logging_filepath, type(logging_filepath))
+print(repetitions, type(repetitions))
+print(iterations, type(iterations))
+print(delay, type(delay))
+print(use_oscilloscope, type(use_oscilloscope))

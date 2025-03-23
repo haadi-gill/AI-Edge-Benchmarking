@@ -23,6 +23,16 @@ import os
 
 """
 
+
+config_df = pandas.read_excel("Scripts/benchmark_template.xlsx")
+config_df.drop(columns=["Description", "Flag", "Unnamed: 4", "Flag Values"], inplace=True)
+
+
+def config_value(label):
+    
+    return df[df['Name'] == label].reset_index()["Value"][0]
+
+
 # Dictionary of information for the oscilloscope
 OS_Data = {
     'ip_addr': ('10.245.26.87', 5555),
@@ -39,9 +49,10 @@ MM_Data = {
     'curr_dc' : ':MEAS:CURR:DC?\n'
 }
 
+
 # Set up logging file for error reporting
 # Referenced from: https://stackoverflow.com/questions/3383865/how-to-log-error-to-file-and-not-fail-on-exception
-logging.basicConfig(filename='ErrorLogs\\benchmarking.log', level=logging.ERROR,
+logging.basicConfig(filename=config_value('logging_filepath'), level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
 
 logger = logging.getLogger(__name__)
@@ -51,33 +62,28 @@ logger = logging.getLogger(__name__)
     These values define the number of iterations to measure, for the total repetitions and the frequency (Hz) per repetition.
     For best results, these values should be consistent for all sets of measurements between boards.
 """
-repetitions = 3
-iterations = 50
-delay = 0.1
+repetitions = config_value('repetitions')
+iterations = config_value('iterations')
+delay = config_value('delay')
 
 
 
 print("Before beginning the measurements, enter data to label the current trial.")
 
-new_ip = input(f"Enter the IP address of the multimeter ([d]efault - {MM_Data['ip_addr'][0]}): ")
+new_ip = config_value('multimeter_ip')
 
-o_scope = input("Would you like to use the oscilloscope to measure precise inferencing time? (Y/N)")
-new_ip2 = ""
-if (o_scope == "Y") :
-    new_ip2 = input(f"Enter the IP address of the oscilloscope ([d]efault - {OS_Data['ip_addr'][0]}): ")
-    print("Using oscilloscope. Please set channel 1 high when inferencing and low otherwise.")
+o_scope = config_value('use_oscilloscope')
+new_ip2 = config_value('oscilloscope_ip')
+    
 
-board_name = input("Enter the name of the board: ")
-test_label = input("Enter the label for the current trial: ")
-filepath = input("Enter the filepath to save the current trial data (default relative path - /[board_name]/[test_label]): ")
-voltage = input("Enter the voltage for the current trial: ")
+board_name = config_value('board_name')
+test_label = config_value('test_label')
+filepath = config_value('data_filepath')
+voltage = config_value('voltage')
 
-while not voltage.strip().isdecimal() and not voltage.strip().isnumeric():
-    voltage = input("\tPlease enter a numerical value: ")
 
 #Multimeter Connection    
-if new_ip != "d" and new_ip != "":
-    print(new_ip)
+if new_ip.strip() != "DEFAULT":
     MM_Data['ip_addr'] = (new_ip, 5555)
 
 print("Attempting to connect to IP address: ", MM_Data['ip_addr'])
@@ -94,9 +100,8 @@ MM_SOCKET.settimeout(2.0)
 RECV_MAX_BYTES = 1024
 
 #Oscilloscope Connection
-if (o_scope == "Y") :
-    if new_ip2 != "d" and new_ip2 != "":
-        print(new_ip2)
+if (o_scope) :
+    if new_ip2 != "DEFAULT":
         OS_Data['ip_addr'] = (new_ip2, 5555)
 
     print("Attempting to connect to IP address: ", OS_Data['ip_addr'])
@@ -112,12 +117,12 @@ if (o_scope == "Y") :
     OS_SOCKET.settimeout(2.0)
 
     
-voltage = float(voltage.strip())
+# voltage = float(voltage.strip())
 
 input("\nPress enter to begin idle current draw...\n")
 
 idle_current = 0;
-idle_iterations = 20
+idle_iterations = config_value('idle_iterations')
 
 for j in range(idle_iterations):
     # Query the Multimeter
@@ -209,10 +214,10 @@ MM_SOCKET.close()
 try:
     # Voltage will be constant, current will fluctuate. Final measurements will represent Power over Time. 
 
-    if filepath == "":
-        filepath = f'./{board_name}/{test_label}'
-    else:
-        filepath = filepath;
+    # if filepath == "":
+    #     filepath = f'./{board_name}/{test_label}'
+    # else:
+    #     filepath = filepath;
     
     if not os.path.exists(filepath):
         os.makedirs(filepath, exist_ok=True)
