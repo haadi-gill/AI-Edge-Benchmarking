@@ -7,6 +7,15 @@ import logging
 from datetime import datetime
 import matplotlib.pyplot as plt
 import os
+import csv
+
+config_df = pandas.read_excel("Scripts/benchmark_template.xlsx")
+config_df.drop(columns=["Description", "Flag", "Unnamed: 4", "Flag Values"], inplace=True)
+
+
+def config_value(label):
+    
+    return config_df[config_df['Name'] == label].reset_index()["Value"][0]
 
 MM_Data = {
     'ip_addr' : ('10.245.26.233', 5555),
@@ -35,6 +44,12 @@ idle_current = 0
 idle_iterations = 20
 inferences_measured = 10
 
+inference_time = 0.002065
+board_name = config_value('board_name')
+test_label = config_value('test_label')
+voltage = config_value('voltage')
+filepath = config_value('data_filepath')
+
 for j in range(idle_iterations):
     # Query the Multimeter
     MM_SOCKET.send(bytes(MM_Data['curr_dc'], 'utf_8'))
@@ -53,15 +68,23 @@ time.sleep(0.5)
 print("\nBeginning precise power measurements for %d inferences\n" % inferences_measured)
 
 inferences = 0
-readings = []
+average_current = 0
 
 while (inferences < inferences_measured) :
     # Query the Multimeter
     MM_SOCKET.send(bytes(":MEAS:CURR:DC?\n", 'utf_8'))
     # Read and store the value 
     data_in = (bytes.decode(MM_SOCKET.recv(1024), 'utf_8'))
-    readings.append(data_in.strip())
+    average_current += ((float(data_in.strip()) - idle_current) * (1/inferences_measured))
     inferences += 1
     print("Inference %d recorded." % inferences)
 
-print(readings)
+average_power = average_current * voltage
+energy = average_power * inference_time
+score = 1 / energy
+
+data = [board_name, test_label, inference_time, average_power, energy, score]
+
+with open(f'{filepath}/out.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(data)
