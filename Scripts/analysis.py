@@ -13,24 +13,61 @@ import os
 """
 
 
-df = pandas.read_excel("Scripts/benchmark_template.xlsx")
-df.drop(columns=["Description", "Flag", "Unnamed: 4", "Flag Values"], inplace=True)
+file = open("Scripts/analysis_filepaths.txt", 'r')
+columns = ["Board Name", "Trial Name", "Average Inference Time", "Average Offset Power", "Energy Consumed", "Energy Score"]
+
+df = pandas.DataFrame(columns=columns)
+
+for line in file:
+    if line == "\n":
+        break
+    
+    line = line.strip()
+    
+    temp_file = open(line, 'r')
+    
+    data = []
+    
+    for val in temp_file.readlines():
+        
+        temp_data = val.strip().split(",")
+        temp_data = [temp_data[0], temp_data[1], float(temp_data[2]), float(temp_data[3]), float(temp_data[4]), float(temp_data[5])]
+        data.append(temp_data)
+    
+    temp_file.close()
+    
+    for i in range(len(data)):
+        df.loc[len(df)] = data[i]
+
+file.close()
+
 print(df)
-print(df[df['Name'] == 'logging_filepath']["Value"][0])
 
+# Average any results across same board, different trials
 
-def config_value(label):
+new_df = pandas.DataFrame(columns=columns)
+
+print('\n\n\n')
+for board in df['Board Name'].unique():
+    temp_df = df[df['Board Name'] == board].copy()
+    temp_df.reset_index(inplace=True)
     
-    return df[df['Name'] == label].reset_index()["Value"][0]
+    average_inference_time = temp_df['Average Inference Time'].mean(axis=0)
+    average_offset_power = temp_df['Average Offset Power'].mean(axis=0)
+    energy_consumed = temp_df['Energy Consumed'].mean(axis=0)
+    energy_score = temp_df['Energy Score'].mean(axis=0)
     
-logging_filepath = config_value('logging_filepath')        
-repetitions = config_value('repetitions')
-iterations = config_value('iterations')
-delay = config_value('delay')
-use_oscilloscope = config_value('use_oscilloscope')
+    new_df.loc[len(new_df)] = [board, "Average", average_inference_time, average_offset_power, energy_consumed, energy_score]
 
-print(logging_filepath, type(logging_filepath))
-print(repetitions, type(repetitions))
-print(iterations, type(iterations))
-print(delay, type(delay))
-print(use_oscilloscope, type(use_oscilloscope))
+print(new_df)
+
+# Generate bar graphs showing each category of results across all board averages
+
+for column in new_df.columns:
+    if column == "Board Name" or column == "Trial Name":
+        continue
+    
+    plt.bar(new_df['Board Name'], new_df[column])
+    plt.title(column)
+    plt.savefig('Results/' + column + '.png')
+    plt.close()
