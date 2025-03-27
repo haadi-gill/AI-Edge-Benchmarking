@@ -52,9 +52,9 @@ for board in df['Board Name'].unique():
     temp_df = df[df['Board Name'] == board].copy()
     temp_df.reset_index(inplace=True)
     
-    average_inference_time = temp_df['Average Inference Time'].mean(axis=0)
-    average_offset_power = temp_df['Average Offset Power'].mean(axis=0)
-    energy_consumed = temp_df['Energy Consumed'].mean(axis=0)
+    average_inference_time = temp_df['Average Inference Time (s)'].mean(axis=0)
+    average_offset_power = temp_df['Average Power Difference During Inferencing (W)'].mean(axis=0)
+    energy_consumed = temp_df['Energy Consumed Per Inference (J)'].mean(axis=0)
     energy_score = temp_df['Energy Score'].mean(axis=0)
     
     new_df.loc[len(new_df)] = [board, "Average", average_inference_time, average_offset_power, energy_consumed, energy_score]
@@ -69,5 +69,7 @@ for column in new_df.columns:
     
     plt.bar(new_df['Board Name'], new_df[column])
     plt.title(column)
+    plt.xlabel("Board")
+    plt.ylabel("Measurement")
     plt.savefig('Results/' + column + '.png')
     plt.close()

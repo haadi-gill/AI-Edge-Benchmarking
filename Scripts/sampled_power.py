@@ -26,13 +26,13 @@ import csv
 """
 
 
-config_df = pandas.read_excel("Scripts/benchmark_template.xlsx")
+config_df = pandas.read_excel("Scripts/config.xlsx")
 config_df.drop(columns=["Description", "Flag", "Unnamed: 4", "Flag Values"], inplace=True)
 
 
 def config_value(label):
     
-    return df[df['Name'] == label].reset_index()["Value"][0]
+    return config_df[config_df['Name'] == label].reset_index()["Value"][0]
 
 
 # Dictionary of information for the oscilloscope

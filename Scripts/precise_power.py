@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import os
 import csv
 
-config_df = pandas.read_excel("Scripts/benchmark_template.xlsx")
+config_df = pandas.read_excel("Scripts/config.xlsx")
 config_df.drop(columns=["Description", "Flag", "Unnamed: 4", "Flag Values"], inplace=True)
 
 
@@ -18,7 +18,7 @@ def config_value(label):
     return config_df[config_df['Name'] == label].reset_index()["Value"][0]
 
 MM_Data = {
-    'ip_addr' : ('10.245.26.233', 5555),
+    'ip_addr' : ('10.245.26.218', 5555),
     'curr_dc' : ':MEAS:CURR:DC?\n'
 }
 
@@ -40,15 +40,15 @@ time.sleep(0.5)
 
 input("\nPress enter to begin idle current draw...\n")
 
-idle_current = 0
-idle_iterations = 20
-inferences_measured = 10
-
-inference_time = 0.002065
+idle_iterations = config_value('idle_iterations')
+inferences_measured = config_value('inferences_measured')
+inference_time = config_value('inference_time')
 board_name = config_value('board_name')
 test_label = config_value('test_label')
 voltage = config_value('voltage')
 filepath = config_value('data_filepath')
+
+idle_current = 0
 
 for j in range(idle_iterations):
     # Query the Multimeter
@@ -65,7 +65,7 @@ time.sleep(0.5)
 MM_SOCKET.send(bytes(":TRIG:EXT RISE\n", "utf_8"))
 time.sleep(0.5)
 
-print("\nBeginning precise power measurements for %d inferences\n" % inferences_measured)
+input("\nPress enter when ready to execute %d inferences\n" % inferences_measured)
 
 inferences = 0
 average_current = 0
@@ -84,6 +84,13 @@ energy = average_power * inference_time
 score = 1 / energy
 
 data = [board_name, test_label, inference_time, average_power, energy, score]
+
+if (filepath == 'DEFAULT') :
+    filepath = f'./{board_name}/{test_label}'
+
+print(filepath)
+if not os.path.exists(filepath):
+    os.makedirs(filepath, exist_ok=True)
 
 with open(f'{filepath}/out.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
