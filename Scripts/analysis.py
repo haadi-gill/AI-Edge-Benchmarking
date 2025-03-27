@@ -14,7 +14,7 @@ import os
 
 
 file = open("Scripts/analysis_filepaths.txt", 'r')
-columns = ["Board Name", "Trial Name", "Average Inference Time", "Average Offset Power", "Energy Consumed", "Energy Score"]
+columns = ["Board Name", "Trial Name", "Average Inference Time (s)", "Average Power Difference During Inferencing (W)", "Energy Consumed Per Inference (J)", "Energy Score"]
 
 df = pandas.DataFrame(columns=columns)
 
