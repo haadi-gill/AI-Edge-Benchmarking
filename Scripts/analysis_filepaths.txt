@@ -1,6 +1,4 @@
-Scripts/test_out.csv
-Scripts/test_out.csv
-Scripts/test_out.csv
-Scripts/test_out.csv
-Scripts/test_out.csv
-Scripts/test_out_copy.csv
+RaspberryPi_3B/Aud0/out.csv
+RaspberryPi_3B/Aud1/out.csv
+RaspberryPi_3B/0/out.csv
+RaspberryPi_3B/2/out.csv
