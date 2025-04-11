@@ -33,14 +33,26 @@ int main(int argc, char **argv) {
     signal.get_data = &get_signal_data;
 
     // Perform DSP pre-processing and inference
-    res = run_classifier(&signal, &result, false);
+    int time;
+    for(int i = 0; i < 100 ; i ++){
+        res = run_classifier(&signal, &result, false);
 
-    // Print return code and how long it took to perform inference
-    ei_printf("run_classifier returned: %d\r\n", res);
-    ei_printf("Timing: DSP %d ms, inference %d ms, anomaly %d ms\r\n",
-            result.timing.dsp,
-            result.timing.classification,
-            result.timing.anomaly);
+           ei_printf("run_classifier returned: %d\r\n", res);
+            ei_printf("Timing: DSP %d us, inference %d us, anomaly %d us\r\n",
+            result.timing.dsp_us,
+            result.timing.classification_us,
+            result.timing.anomaly_us);
+            time += result.timing.classification_us;
+            ei_sleep(100);
+    }
+    time = time / 100;
+    ei_printf("Average inf time = %d\r\n", res);
+
+
+
+
+
+    // Print return code and how long it took to perform inferenc
 
     // Print the prediction results (object detection)
 #if EI_CLASSIFIER_OBJECT_DETECTION == 1

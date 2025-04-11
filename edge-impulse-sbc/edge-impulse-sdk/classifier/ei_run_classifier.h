@@ -1113,7 +1113,7 @@ __attribute__((unused)) EI_IMPULSE_ERROR run_impulse(
         while (next_tick > ei_read_timer_us() - sampling_us_start);
     }
 
-    result->timing.sampling = (ei_read_timer_us() - sampling_us_start) / 1000;
+    result->timing.sampling = (ei_read_timer_us() - sampling_us_start);
 
     signal_t signal;
     int err = numpy::signal_from_buffer(x, impulse.dsp_input_frame_size, &signal);
