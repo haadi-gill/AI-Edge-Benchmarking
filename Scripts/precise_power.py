@@ -10,7 +10,7 @@ import os
 import csv
 
 #config_df = pandas.read_excel("Scripts/config.xlsx")
-config_df = pandas.read_excel("Scripts/config_Raspi3B.xlsx")
+config_df = pandas.read_excel("Scripts/config_Raspi400.xlsx")
 config_df.drop(columns=["Description", "Flag", "Unnamed: 4", "Flag Values"], inplace=True)
 
 
@@ -20,7 +20,7 @@ def config_value(label):
 
 MM_Data = {
     #'ip_addr' : ('10.245.26.218', 5555),
-    'ip_addr' : ('10.245.26.80', 5555),
+    'ip_addr' : ('10.245.26.74', 5555),
     'curr_dc' : ':MEAS:CURR:DC?\n'
 }
 

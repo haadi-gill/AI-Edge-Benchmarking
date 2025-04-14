@@ -1,2 +1,3 @@
-Scripts/max78_kws.csv
-RaspberryPi_3B/Aud0/out.csv
+RaspberryPi_400/AudClass1/Pi400Aud.csv
+RaspberryPi_400/EdgeImp2/out.csv
+RaspberryPi_400/ObjDet1/Pi400Obj.csv
