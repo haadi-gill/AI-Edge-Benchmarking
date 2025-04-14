@@ -68,6 +68,8 @@ for column in new_df.columns:
         continue
     
     plt.bar(new_df['Board Name'], new_df[column])
+    for i, v in enumerate(new_df[column]):
+        plt.text(i, v, str(round(v, 2)), ha='center', va='bottom')
     plt.title(column)
     plt.xlabel("Board")
     plt.ylabel("Measurement")
