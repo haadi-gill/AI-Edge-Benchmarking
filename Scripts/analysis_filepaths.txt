@@ -1,2 +1,4 @@
-Final_Results/max78_rps_accelerator.csv
-Final_Results/max78_rps_default.csv
+Final_Results/beaglebone_withperiph_Edge0.csv
+Final_Results/RPi3_EdgeImp2.csv
+Final_Results/RPi400_Edge2.csv
+Final_Results/pico_edge_impulse.csv
