@@ -36,11 +36,8 @@ Inside the scripts folder there is a config file, two measurement scripts, and a
         <li><a href = "/MAX78000_FTHR">MAX78000FTHR</a></li>
         <li><a href = "/RaspberryPi_Pico">Raspberry Pi Pico</a></li>
         <li><a href = "/RaspberryPi_3B">Raspberry Pi 3B</a></li>
-    </ul>
-    <h3>List of In-Progress/Future Boards</h3>
-    <ul>
         <li>BeagleBone AI-64</li>
-        <li>Raspberry Pi Zero</li>
+        <li>Raspberry Pi 400</li>
     </ul>
 </html>
 
