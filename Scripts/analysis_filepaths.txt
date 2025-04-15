@@ -1,3 +1,4 @@
-RaspberryPi_400/AudClass1/Pi400Aud.csv
-RaspberryPi_400/EdgeImp2/out.csv
-RaspberryPi_400/ObjDet1/Pi400Obj.csv
+Final_Results/beaglebone_withperiph_Edge0.csv
+Final_Results/RPi3_EdgeImp2.csv
+Final_Results/RPi400_Edge2.csv
+Final_Results/pico_edge_impulse.csv
