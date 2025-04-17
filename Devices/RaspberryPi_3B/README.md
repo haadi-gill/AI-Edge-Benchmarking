@@ -36,6 +36,9 @@ Connect with application such as RealVNC Viewer to access desktop environment
  Power from cut and soldered micro USB cable runs into the multimeter, then into the board.
  Peripherals such as keyboard, mouse, and monitor are plugged in while not testing the model.
 
+ ### Pin Toggle
+ A pin toggles high and low directly before and after the model is called to make an inference. The pin should be connected to the external trigger of the multimeter. When the pin toggles high, the inference begins and the multimeter records the current at the moment of inference. This ensures power measurements are during times of the model running. The toggles pin is GPIO 27, physical pin 13 on the 40 pin output.
+
  ### Script
  The script is a standard in the project as all members run it. It interfaces with the Digital Multimeter to measure current, which is then transformed into power. It then plots these points into a graph as raw power and offset power for when the model is and is not running.
 
@@ -48,11 +51,10 @@ Connect with application such as RealVNC Viewer to access desktop environment
  ```
  vcgencmd measure_temp
  ```
-
+ inference_log.csv saved the CPU usage and temperatue during model runtime.
 
  ## Issues
- * Currently working on pin toggle high during inferences to match the power changes to inferences
- * Working on displaying CPU usage and temperature over time to an output file
+ * No current issues
  
  ## References
 * [Paul McWhorter](https://www.youtube.com/watch?v=yE7Ve3U5Slw)
